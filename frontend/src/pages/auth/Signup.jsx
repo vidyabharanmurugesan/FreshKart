@@ -1431,9 +1431,6 @@ export default function Signup() {
           <div className="modal-content animate-scaleIn" style={{ background: '#1e293b', color: 'white', border: '1px solid #334155', borderRadius: '12px', width: '100%', maxWidth: '500px', padding: '30px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
             <div style={{ fontSize: '4rem' }}></div>
             <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#10b981' }}>Application Submitted!</h2>
-            <p style={{ fontSize: '0.9rem', lineHeight: '1.6', color: '#cbd5e1' }}>
-              Your application has been submitted successfully. Our verification team will review your documents. Once approved, you can start accepting delivery orders.
-            </p>
             <button
               type="button"
               onClick={() => {

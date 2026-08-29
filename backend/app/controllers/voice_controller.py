@@ -20,7 +20,7 @@ def initiate_call(delivery_partner_id):
         return jsonify({'error': 'Order not found'}), 404
         
     # Verify caller exists and is either a delivery partner or the assigned delivery partner for this order
-    delivery = User.query.get(int(delivery_partner_id))
+    delivery = User.get_by_id(delivery_partner_id)
     if not delivery:
         return jsonify({'error': 'Caller user not found'}), 404
         
@@ -33,7 +33,7 @@ def initiate_call(delivery_partner_id):
     if not target_user_id:
         return jsonify({'error': f'No {role_to_call} associated with this order'}), 400
         
-    target_user = User.query.get(int(target_user_id))
+    target_user = User.get_by_id(target_user_id)
     if not target_user:
         return jsonify({'error': f'{role_to_call.capitalize()} user not found'}), 404
         

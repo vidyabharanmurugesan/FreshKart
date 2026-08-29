@@ -122,27 +122,6 @@ export default function DeliveryDashboard() {
         </button>
       </div>
 
-      {!isApproved && (
-        <div style={{
-          background: 'rgba(245, 158, 11, 0.12)',
-          border: '1px solid rgba(245, 158, 11, 0.25)',
-          color: '#f59e0b',
-          padding: '20px',
-          borderRadius: '12px',
-          marginBottom: '24px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          textAlign: 'center'
-        }}>
-          <span style={{ fontSize: '2.5rem' }}></span>
-          <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Verification Pending</h3>
-          <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1', lineHeight: '1.5', maxWidth: '600px' }}>
-            Your application has been submitted successfully. Our verification team will review your documents. Once approved, you can start accepting delivery orders.
-          </p>
-        </div>
-      )}
 
       {/* Domain Tabs */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>

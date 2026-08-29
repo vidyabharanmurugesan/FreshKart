@@ -16,8 +16,8 @@ def get_active_coupons():
 def get_all_coupons(user_id):
     """Admin only: get all coupons (both active and inactive)."""
     try:
-        user = User.query.get(int(user_id))
-        if not user or user.role != 'admin':
+        user = User.get_by_id(user_id)
+        if not user or str(user.role).strip().lower() != 'admin':
             return jsonify({'error': 'Unauthorized: Admin privileges required'}), 403
 
         coupons = CouponModel.get_all_coupons()
@@ -36,8 +36,8 @@ def create_coupon(user_id):
         return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
         
     try:
-        user = User.query.get(int(user_id))
-        if not user or user.role != 'admin':
+        user = User.get_by_id(user_id)
+        if not user or str(user.role).strip().lower() != 'admin':
             return jsonify({'error': 'Unauthorized: Admin privileges required'}), 403
 
         # Prevent duplicate codes
@@ -63,8 +63,8 @@ def create_coupon(user_id):
 def delete_coupon(coupon_id, user_id):
     """Admin only: Delete a coupon."""
     try:
-        user = User.query.get(int(user_id))
-        if not user or user.role != 'admin':
+        user = User.get_by_id(user_id)
+        if not user or str(user.role).strip().lower() != 'admin':
             return jsonify({'error': 'Unauthorized: Admin privileges required'}), 403
 
         deleted = CouponModel.delete_coupon(coupon_id)

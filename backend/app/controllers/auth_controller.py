@@ -1,5 +1,5 @@
 from flask import request, jsonify, send_file
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt
 from app.models.user_model import User
 from app.utils.password_hash import hash_password, verify_password
 from app.config.firebase_config import get_firestore_db
@@ -149,7 +149,7 @@ def signup():
         return jsonify({'error': 'Failed to save user to database.'}), 500
             
     # Generate JWT token
-    access_token = create_access_token(identity=new_user.id)
+    access_token = create_access_token(identity=new_user.id, additional_claims={'role': new_user.role})
     
     # Send seller onboarding license email if the role is seller
     if role == 'seller':
@@ -189,7 +189,7 @@ def login():
         return jsonify({'error': 'Your account has been deactivated. Contact support.'}), 403
     
     # Generate JWT token
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.id, additional_claims={'role': user.role})
     
     return jsonify({
         'message': 'Login successful',
@@ -280,7 +280,7 @@ def google_auth():
             return jsonify({'error': 'Your account has been deactivated. Contact support.'}), 403
             
     # Generate JWT token
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.id, additional_claims={'role': user.role})
     
     return jsonify({
         'message': 'Google authentication successful',
@@ -424,12 +424,41 @@ def get_users_by_role():
         return jsonify({'error': str(e)}), 500
 
 
+def _is_request_admin():
+    try:
+        current_user_id = get_jwt_identity()
+        jwt_claims = get_jwt() or {}
+        token_role = str(jwt_claims.get('role', '') or '').strip().lower()
+        if token_role == 'admin':
+            return True
+
+        if current_user_id:
+            admin = get_user_by_id(current_user_id)
+            if admin:
+                if isinstance(admin, dict):
+                    role_value = str(admin.get('role', '') or '').strip().lower()
+                else:
+                    role_value = str(getattr(admin, 'role', '') or '').strip().lower()
+                if role_value == 'admin':
+                    return True
+
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header.split(' ', 1)[1]
+            from flask_jwt_extended import decode_token
+            decoded = decode_token(token)
+            token_role = str(decoded.get('role', '') or '').strip().lower()
+            if token_role == 'admin':
+                return True
+
+        return False
+    except Exception:
+        return False
+
+
 def approve_user(user_id):
     """Admin only: Approve or reject a seller/delivery partner."""
-    current_user_id = get_jwt_identity()
-    admin = get_user_by_id(current_user_id)
-    
-    if not admin or admin.role != 'admin':
+    if not _is_request_admin():
         return jsonify({'error': 'Unauthorized: Admin privileges required'}), 403
         
     user = get_user_by_id(user_id)
@@ -569,7 +598,7 @@ def download_license():
     if not user:
         return jsonify({'error': 'User not found'}), 404
         
-    if user.role != 'seller':
+    if str(user.role).strip().lower() != 'seller':
         return jsonify({'error': 'Only sellers have a business license certificate'}), 403
         
     try:
@@ -598,7 +627,7 @@ def download_system_report_pdf():
     if not user:
         return jsonify({'error': 'User not found'}), 404
         
-    if user.role != 'admin':
+    if not _is_request_admin():
         return jsonify({'error': 'Unauthorized. Admin access required.'}), 403
         
     report_type = request.args.get('type', 'all')
@@ -644,7 +673,7 @@ def upload_system_logo():
     """Uploads a new system logo and updates the active logo config."""
     current_user_id = get_jwt_identity()
     user = get_user_by_id(current_user_id)
-    if not user or user.role != 'admin':
+    if not user or not _is_request_admin():
         return jsonify({'error': 'Unauthorized. Admin access required.'}), 403
         
     if 'file' not in request.files:

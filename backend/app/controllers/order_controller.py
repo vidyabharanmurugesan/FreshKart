@@ -97,7 +97,7 @@ def assign_delivery(order_id, delivery_partner_id):
         order = OrderModel.get_order_by_id(order_id)
         if not order:
             return jsonify({'error': 'Order not found'}), 404
-        if order.get('status') not in ['pending', 'accepted']:
+        if order.get('status') != 'accepted':
             return jsonify({'error': 'Order is not available for delivery assignment'}), 400
             
         OrderModel.update_order(order_id, {
@@ -152,9 +152,9 @@ def get_tracking(order_id):
 def get_delivery_orders(delivery_partner_id, status=None):
     try:
         if status == 'accepted':
-            # Delivery partners look for 'pending' or 'accepted' orders to pick up
+            # Delivery partners look for orders that have been accepted by the seller
             all_orders = OrderModel.get_all_orders()
-            orders = [o for o in all_orders if o.get('status') in ['pending', 'accepted']]
+            orders = [o for o in all_orders if o.get('status') == 'accepted']
         else:
             # Get orders specifically assigned to this partner
             orders = OrderModel.get_orders_by_delivery_partner(delivery_partner_id)

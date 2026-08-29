@@ -17,7 +17,7 @@ def create_product(seller_id):
         
     try:
         from app.models.user_model import User
-        seller = User.query.get(int(seller_id))
+        seller = User.get_by_id(seller_id)
         if not seller:
             return jsonify({'error': 'Seller not found'}), 404
             
@@ -48,7 +48,7 @@ def create_product(seller_id):
 def get_seller_products(seller_id):
     try:
         from app.models.user_model import User
-        seller = User.query.get(int(seller_id))
+        seller = User.get_by_id(seller_id)
         
         # Enforce filtering by seller's shop_type if it is set
         domain = request.args.get('domain')

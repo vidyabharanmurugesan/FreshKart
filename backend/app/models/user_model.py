@@ -11,8 +11,12 @@ class User:
     
     @staticmethod
     def _firestore_available():
-        db = get_firestore_db()
-        return db is not None
+        try:
+            db = get_firestore_db()
+            return db is not None
+        except RuntimeError:
+            # Application context not available; treat as Firestore unavailable.
+            return False
         
     @staticmethod
     def _ensure_local_store():
@@ -53,7 +57,7 @@ class User:
         self.id = str(id) if id else None
         self.email = email
         self.password_hash = password_hash
-        self.role = role
+        self.role = role.strip().lower() if isinstance(role, str) and role else role
         self.name = name
         self.phone = phone
         self.firebase_uid = firebase_uid
