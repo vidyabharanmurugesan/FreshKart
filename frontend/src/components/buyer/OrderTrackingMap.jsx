@@ -40,7 +40,8 @@ export default function OrderTrackingMap({ orderId }) {
   const [trackingData, setTrackingData] = useState(null);
   const [error, setError] = useState(null);
 
-  const SOCKET_SERVER_URL = 'http://localhost:5000';
+  const SOCKET_SERVER_URL =
+  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchTrackingData();
