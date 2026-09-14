@@ -5,7 +5,8 @@ import { supportService } from '../../services/supportService';
 import { FiSend, FiMessageSquare, FiUser, FiSearch, FiCircle, FiInfo } from 'react-icons/fi';
 import '../../styles/dashboard.css';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL =
+  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export default function SupportChats({ domain = 'food' }) {
   const { user } = useAuth();
