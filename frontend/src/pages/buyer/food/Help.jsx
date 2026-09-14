@@ -12,7 +12,8 @@ const faqItems = [
   'How do I report an issue with my order?',
 ];
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL =
+  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export default function Help({ domain = 'food' }) {
   const { user } = useAuth();
