@@ -9,3 +9,4 @@ reportlab
 gevent>=24.0.0
 gevent-websocket>=0.10.1
 waitress>=3.0.2
+gunicorn==23.0.0
