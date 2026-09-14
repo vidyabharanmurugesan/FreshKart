@@ -234,17 +234,12 @@ export default function Signup() {
     }
 
     try {
-      const response = await authService.sendOtp(formattedPhone);
-      setIsOtpSent(true);
-      setError('');
-      if (response.mode === 'simulation') {
-        setError(`Twilio simulation mode: OTP code generated is ${response.simulated_otp}`);
-      }
-    } catch (err) {
-      console.error('Error sending OTP:', err);
-      setError(err.response?.data?.error || 'Failed to send OTP. Please check your connection.');
-    } finally {
-      setLoadingOtp(false);
+    const response = await api.post('/auth/signup', data);
+    
+    // success
+    } catch (error) {
+        console.error(error);
+        setError('Signup failed. Please try again.');
     }
   };
 
