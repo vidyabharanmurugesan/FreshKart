@@ -7,7 +7,8 @@ import OrderTrackingMap from '../../../components/buyer/OrderTrackingMap';
 import OrderChat from '../../../components/common/OrderChat';
 import '../../../styles/dashboard.css';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL =
+  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export default function OrderTracking({ domain = 'food' }) {
   const navigate = useNavigate();
