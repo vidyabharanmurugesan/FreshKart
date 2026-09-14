@@ -3,7 +3,8 @@ import { io } from 'socket.io-client';
 import { useAuth } from '../../context/AuthContext';
 import { FiSend, FiX, FiMessageSquare } from 'react-icons/fi';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000'; // Make sure this matches your Flask backend
+const SOCKET_SERVER_URL =
+  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export default function OrderChat({ order, onClose }) {
   const { user } = useAuth();
